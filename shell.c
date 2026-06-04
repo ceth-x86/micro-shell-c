@@ -242,6 +242,41 @@ int main() {
                 }
             }
             continue;
+        } else if (strcmp(cmds[0].argv[0], "export") == 0) {
+            if (cmds[0].argv[1] == NULL) {
+                // Print all environment variables
+                extern char **environ;
+                for (char **env = environ; *env != NULL; env++) {
+                    printf("%s\n", *env);
+                }
+            } else {
+                for (int j = 1; cmds[0].argv[j] != NULL; j++) {
+                    char *arg = cmds[0].argv[j];
+                    char *equals = strchr(arg, '=');
+                    if (equals != NULL) {
+                        *equals = '\0';
+                        char *name = arg;
+                        char *value = equals + 1;
+                        if (setenv(name, value, 1) < 0) {
+                            perror("export error");
+                        }
+                    } else {
+                        fprintf(stderr, "export: '%s': not a valid identifier\n", arg);
+                    }
+                }
+            }
+            continue;
+        } else if (strcmp(cmds[0].argv[0], "unset") == 0) {
+            if (cmds[0].argv[1] == NULL) {
+                fprintf(stderr, "unset: not enough arguments\n");
+            } else {
+                for (int j = 1; cmds[0].argv[j] != NULL; j++) {
+                    if (unsetenv(cmds[0].argv[j]) < 0) {
+                        perror("unset error");
+                    }
+                }
+            }
+            continue;
         }
 
         // Execute commands pipeline
