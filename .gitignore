@@ -1,0 +1,9 @@
+# Compiled binaries
+shad_shell
+test_shell
+
+# Object files
+*.o
+
+# Temporary testing output files
+*.txt
